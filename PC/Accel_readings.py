@@ -9,8 +9,6 @@ try:
 
     while True:
         for Current_Accel_Level in range(0, 100):
-            # client.publish('$SYS/broker/clients/connected/AccelLevel', str(Current_Accel_Level))
-            # client.publish('AccelLevel', str(Current_Accel_Level))
             client.publish('AccelLevel', Current_Accel_Level)
             print('Just published the accel level as', str(Current_Accel_Level), 'to the topic ACCEL_LEVEL')
             time.sleep(1)

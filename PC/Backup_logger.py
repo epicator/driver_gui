@@ -3,14 +3,6 @@ import pandas as pd
 import time
 import sys
 
-global TheValues
-
-Shared_Battery = 0
-Shared_Speed = 0
-Shared_Accel = 0
-TheValues = [Shared_Battery, Shared_Speed, Shared_Accel]
-
-
 try:
     # ---------------------|Start of MQTT Subscription|--------------------- #
     #
@@ -37,22 +29,37 @@ try:
         print('Log: ' + buf)
 
 
+    Shared_Battery = 0
+    Shared_Speed = 0
+    Shared_Accel = 0
+
+
     def the_message(client, userdata, message):
+        global Shared_Battery
+        global Shared_Speed
+        global Shared_Accel
+        global Shared_Array
         value = str(message.payload.decode("utf-8"))
-        print('The value of the', print(client), 'is ', value)
         if message.topic == "BatteryLevel":
-            global Shared_Battery
             Shared_Battery = value
+            print('The battery level is ', Shared_Battery)
         elif message.topic == "SpeedLevel":
-            global Shared_Speed
             Shared_Speed = value
+            print('The speed level is ', Shared_Speed)
         elif message.topic == "AccelLevel":
-            global Shared_Accel
             Shared_Accel = value
-        global TheValues
-        TheValues = [Shared_Battery, Shared_Speed, Shared_Accel]
-        print(value)
-        print(TheValues)
+            print('The accel level is ', Shared_Accel)
+        Shared_Array = [
+            int(Shared_Battery),
+            int(Shared_Speed),
+            int(Shared_Accel)
+        ]
+        print('The Array currently is ', Shared_Array)
+        df = pd.DataFrame([[Shared_Array[0], Shared_Array[1], Shared_Array[2]]],
+                          columns=['BatteryLevel', 'SpeedLevel', 'AccelLevel'])
+        df.to_csv('Secondary_Backup.csv', mode='a', index_label='log', index=True)
+
+        print(df)
 
 
     ConnectionFlag = False
@@ -65,32 +72,16 @@ try:
         sys.exit()
 
     print('connecting to the Broker')
-
-    # RPSubscriber.subscribe([('$SYS/broker/clients/connected/BatteryLevel', 0), ('$SYS/broker/clients/connected/SpeedLevel', 1)])
-    # RPSubscriber.subscribe([('BatteryLevel', 0), ('SpeedLevel', 1)])
     RPSubscriber.subscribe([('BatteryLevel', 0), ('SpeedLevel', 1), ('AccelLevel', 2)])
-
     RPSubscriber.on_connect = connection_test
-
     # RPSubscriber.on_log = data_logger
     RPSubscriber.on_message = the_message
-    print(TheValues)
-    print(TheValues[1])
-
-    col1 = "Battery"
-    col2 = "Speed"
-    col3 = "Acceleration"
-
-    # my_dict= {'Battery': TheValues[0], 'Speed': TheValues[1], 'Acceleration': TheValues[2]}
-    # data = pd.DataFrame([my_dict])
-    # data.to_excel('Book1.xlsx', sheet_name='Sheet1')
 
     if not RPSubscriber.is_connected():
         RPSubscriber.loop_forever()
     else:
         RPSubscriber.disconnect()
         sys.exit(1)
-    print('wat..')
     #
     #
     #

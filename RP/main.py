@@ -5,7 +5,6 @@ import PySimpleGUI as Pg
 import numpy as np
 import paho.mqtt.client as pm
 import pandas as pd
-import openpyxl
 import base64
 import threading
 import time
@@ -222,7 +221,6 @@ def the_message(client, userdata, message):
     global Shared_Speed
     global Shared_Accel
     global Shared_Array
-
     value = str(message.payload.decode("utf-8"))
     if message.topic == "BatteryLevel":
         Shared_Battery = value
@@ -233,22 +231,14 @@ def the_message(client, userdata, message):
     elif message.topic == "AccelLevel":
         Shared_Accel = value
         print('The accel level is ', Shared_Accel)
-
     Shared_Array = [
         int(Shared_Battery),
         int(Shared_Speed),
         int(Shared_Accel)
     ]
     print('The Array currently is ', Shared_Array)
-
-    dictionary = {'BatteryLevel': [Shared_Array[0]], 'SpeedLevel': [Shared_Array[1]], 'AccelLevel': [Shared_Array[2]]}
-
-    # df = pd.DataFrame(data=dictionary, index=np.arange(0, 10))
-    append = pd.ExcelWriter('Book1.xlsx', mode='a', if_sheet_exists='overlay')
-    df = pd.DataFrame([[Shared_Array[0], Shared_Array[1], Shared_Array[0]]],
-                      index=range(20), columns=['BatteryLevel', 'SpeedLevel', 'AccelLevel'])
-    df.to_excel(excel_writer=append, sheet_name='Sheet1')
-
+    df = pd.DataFrame([[Shared_Array[0], Shared_Array[1], Shared_Array[2]]], columns=['BatteryLevel', 'SpeedLevel', 'AccelLevel'])
+    df.to_csv('Local_Backup.csv', mode='a', index_label='log', index=True)
 
     print(df)
 
@@ -280,18 +270,19 @@ while True:
     elif event == KEY_MQTT:
         if True:
             global Shared_Array
+
             # For windows:
-            subprocess.call('start cmd.exe @cmd /k python3 Battery_readings.py', shell=True)
-            subprocess.call('start cmd.exe @cmd /k python3 Speed_readings.py', shell=True)
-            subprocess.call('start cmd.exe @cmd /k python3 Accel_readings.py', shell=True)
+            # subprocess.call('start cmd.exe @cmd /k PC\Simulated sensors\python3 Battery_readings.py', shell=True)
+            # subprocess.call('start cmd.exe @cmd /k PC\Simulated sensors\python3 Speed_readings.py', shell=True)
+            # subprocess.call('start cmd.exe @cmd /k PC\Simulated sensors\python3 Accel_readings.py', shell=True)
             # time.sleep(1)
-            # subprocess.call('start cmd.exe @cmd /k python3 Raspberry_data_collector.py', shell=True)
+            # subprocess.call('start cmd.exe @cmd /k python3 PC\Backup_logger.py', shell=True)
             # For Raspberry pi:
-            # subprocess.call('lxterminal -e python3.10 Battery_readings.py', shell=True)
-            # subprocess.call('lxterminal -e python3.10 Speed_readings.py', shell=True)
-            # subprocess.call('lxterminal -e python3.10 Accel_readings.py', shell=True)
+            # subprocess.call('lxterminal -e python3.10 PC\Simulated sensors\Battery_readings.py', shell=True)
+            # subprocess.call('lxterminal -e python3.10 PC\Simulated sensors\Speed_readings.py', shell=True)
+            # subprocess.call('lxterminal -e python3.10 PC\Simulated sensors\Accel_readings.py', shell=True)
             # time.sleep(1)
-            # subprocess.call('lxterminal -e python3.10 Raspberry_data_collector.py', shell=True)
+            # subprocess.call('lxterminal -e python3.10 PC\Backup_logger.py', shell=True)
 
             Broker = 'localhost'
             RPSubscriber = pm.Client('RaspberryPi')
