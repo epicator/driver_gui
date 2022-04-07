@@ -1,0 +1,6 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Name=AutorunGUI
+Exec=python3.10 /home/pi/Desktop/driver_gui/RP/main.py
+
