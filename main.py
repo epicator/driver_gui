@@ -1,17 +1,18 @@
 
 # Welcome to the script ^^
 
-from typing import List
-
 import PySimpleGUI as Pg
 import numpy as np
 import paho.mqtt.client as pm
+import pandas as pd
+import openpyxl
 import base64
 import threading
 import time
 import os
 import sys
 import subprocess
+
 
 
 # ---------------------|Start of GUI|--------------------- #
@@ -87,7 +88,7 @@ Speed_level = Pg.Column(
         [Pg.Text('00', key=KEY_SPEED, font='_ 80', expand_x=True, expand_y=True)],
         [
             Pg.Text('', size=(15, 1)),
-            Pg.Text('M/s', font='_ 50')
+            Pg.Text('km/h', font='_ 50')
         ]
 
         # Usable Base64 images:
@@ -218,12 +219,10 @@ Shared_Accel = 0
 
 def the_message(client, userdata, message):
     global Shared_Battery
-    Shared_Battery = 0
     global Shared_Speed
-    Shared_Speed = 0
     global Shared_Accel
-
     global Shared_Array
+
     value = str(message.payload.decode("utf-8"))
     if message.topic == "BatteryLevel":
         Shared_Battery = value
@@ -234,11 +233,23 @@ def the_message(client, userdata, message):
     elif message.topic == "AccelLevel":
         Shared_Accel = value
         print('The accel level is ', Shared_Accel)
-    Shared_Array = [Shared_Battery, Shared_Speed, Shared_Accel]
+
+    Shared_Array = (
+        [int(Shared_Battery)],
+        [int(Shared_Speed)],
+        [int(Shared_Accel)]
+    )
     print('The Array currently is ', Shared_Array)
-    my_dict = [Shared_Array[0], Shared_Accel[1], Shared_Array[2]]
-    data = pd.DataFrame([my_dict], index=False, Column=['Battery', 'Speed', 'Acceleration'])
-    data.to_excel('Book1.xlsx', sheet_name='Sheet1')
+
+    # dictionary = {'BatteryLevel': [Shared_Array[0]], 'SpeedLevel': [Shared_Array[1]], 'AccelLevel': [Shared_Array[2]]}
+    # df = pd.DataFrame(data=dictionary, index=np.arange(0, 10))
+
+    df = pd.DataFrame([Shared_Array[0], Shared_Array[1], Shared_Array[0]],
+                      index=['log'+str(Shared_Array[0])], columns=[['BatteryLevel'], ['SpeedLevel'], ['AccelLevel']])
+
+    df.to_excel('Book1.xlsx', sheet_name='Sheet1', index_label='log')
+
+    print(df)
 
 
 def init():

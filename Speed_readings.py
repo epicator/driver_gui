@@ -11,7 +11,7 @@ try:
         for Current_Speed in range(0, 30):
             # client.publish('$SYS/broker/clients/connected/SpeedLevel', str(Current_Speed))
             # client.publish('SpeedLevel', str(Current_Speed))
-            client.publish('SpeedLevel', str(Current_Speed))
+            client.publish('SpeedLevel', Current_Speed)
             print('Just published the speed level as', str(Current_Speed), 'to the topic SPEED_LEVEL')
             time.sleep(1)
 
