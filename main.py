@@ -234,20 +234,21 @@ def the_message(client, userdata, message):
         Shared_Accel = value
         print('The accel level is ', Shared_Accel)
 
-    Shared_Array = (
-        [int(Shared_Battery)],
-        [int(Shared_Speed)],
-        [int(Shared_Accel)]
-    )
+    Shared_Array = [
+        int(Shared_Battery),
+        int(Shared_Speed),
+        int(Shared_Accel)
+    ]
     print('The Array currently is ', Shared_Array)
 
-    # dictionary = {'BatteryLevel': [Shared_Array[0]], 'SpeedLevel': [Shared_Array[1]], 'AccelLevel': [Shared_Array[2]]}
+    dictionary = {'BatteryLevel': [Shared_Array[0]], 'SpeedLevel': [Shared_Array[1]], 'AccelLevel': [Shared_Array[2]]}
+
     # df = pd.DataFrame(data=dictionary, index=np.arange(0, 10))
 
     df = pd.DataFrame([Shared_Array[0], Shared_Array[1], Shared_Array[0]],
-                      index=['log'+str(Shared_Array[0])], columns=[['BatteryLevel'], ['SpeedLevel'], ['AccelLevel']])
+                      index=[a], columns=[['BatteryLevel'], ['SpeedLevel'], ['AccelLevel']])
 
-    df.to_excel('Book1.xlsx', sheet_name='Sheet1', index_label='log')
+    # df.to_excel('Book1.xlsx', sheet_name='Sheet1', index_label='log')
 
     print(df)
 
