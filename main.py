@@ -245,8 +245,8 @@ def the_message(client, userdata, message):
 
     # df = pd.DataFrame(data=dictionary, index=np.arange(0, 10))
 
-    df = pd.DataFrame([Shared_Array[0], Shared_Array[1], Shared_Array[0]],
-                      index=[a], columns=[['BatteryLevel'], ['SpeedLevel'], ['AccelLevel']])
+    df = pd.DataFrame([[Shared_Array[0], Shared_Array[1], Shared_Array[0]]],
+                      index=range(20), columns=['BatteryLevel', 'SpeedLevel', 'AccelLevel'])
 
     # df.to_excel('Book1.xlsx', sheet_name='Sheet1', index_label='log')
 
