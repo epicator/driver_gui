@@ -244,11 +244,11 @@ def the_message(client, userdata, message):
     dictionary = {'BatteryLevel': [Shared_Array[0]], 'SpeedLevel': [Shared_Array[1]], 'AccelLevel': [Shared_Array[2]]}
 
     # df = pd.DataFrame(data=dictionary, index=np.arange(0, 10))
-
+    append = pd.ExcelWriter('Book1.xlsx', mode='a', if_sheet_exists='overlay')
     df = pd.DataFrame([[Shared_Array[0], Shared_Array[1], Shared_Array[0]]],
                       index=range(20), columns=['BatteryLevel', 'SpeedLevel', 'AccelLevel'])
+    df.to_excel(excel_writer=append, sheet_name='Sheet1')
 
-    # df.to_excel('Book1.xlsx', sheet_name='Sheet1', index_label='log')
 
     print(df)
 
