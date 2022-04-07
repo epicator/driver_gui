@@ -81,11 +81,10 @@ try:
     col2 = "Speed"
     col3 = "Acceleration"
 
-    my_dict= {'Battery': TheValues[0], 'Speed': TheValues[1], 'Acceleration': TheValues[2]}
-    data = pd.DataFrame([my_dict])
-    data.to_excel('Book1.xlsx', sheet_name='Sheet1')
+    # my_dict= {'Battery': TheValues[0], 'Speed': TheValues[1], 'Acceleration': TheValues[2]}
+    # data = pd.DataFrame([my_dict])
+    # data.to_excel('Book1.xlsx', sheet_name='Sheet1')
 
-    # open('ArraySheet.txt','w').write(TheValues)
     if not RPSubscriber.is_connected():
         RPSubscriber.loop_forever()
     else:
