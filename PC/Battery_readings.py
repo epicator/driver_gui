@@ -2,8 +2,8 @@ import paho.mqtt.client as pm
 import time
 
 try:
-    Broker = "localhost"
-    # Broker = "192.168.0.33"
+    # Broker = "localhost"
+    Broker = "192.168.0.33"
     client = pm.Client('BATTERY_LEVEL', 0)
     client.connect(Broker)
 
